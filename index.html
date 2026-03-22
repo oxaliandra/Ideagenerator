@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0c0f0a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Tattoo Idee">
+<meta name="description" content="Tägliche Tattoo-Design-Inspiration für Lena">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.svg">
+<title>Tattoo Idee des Tages</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0c0f0a;--surf:#131710;--surf2:#1a1f17;
+  --green:#4a7c59;--green-l:#6db384;
+  --gold:#c9a84c;--gold-d:rgba(201,168,76,0.12);
+  --text:#d6ddd0;--muted:#6b7a64;
+  --border:rgba(74,124,89,0.25);--border-g:rgba(201,168,76,0.25);
+}
+body{
+  font-family:Georgia,serif;background:var(--bg);color:var(--text);
+  min-height:100vh;min-height:100dvh;
+  padding:env(safe-area-inset-top,1.5rem) 1.25rem env(safe-area-inset-bottom,1.5rem);
+  position:relative;overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 60% 50% at 20% 10%,rgba(74,124,89,0.08) 0%,transparent 60%),
+             radial-gradient(ellipse 40% 60% at 80% 90%,rgba(201,168,76,0.05) 0%,transparent 60%);
+}
+.wrap{max-width:620px;margin:0 auto;position:relative;z-index:1;padding-top:1rem}
+
+/* Header */
+header{text-align:center;margin-bottom:2rem}
+.eyebrow{font-family:monospace;font-size:.58rem;letter-spacing:.35em;text-transform:uppercase;color:var(--green-l);margin-bottom:.4rem;opacity:.8}
+h1{font-size:clamp(1.5rem,5vw,2.2rem);font-weight:400;color:#e8ede2;line-height:1.2}
+h1 span{color:var(--gold)}
+.tags{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin-top:.9rem}
+.tag{font-family:monospace;font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;padding:.2rem .65rem;border:1px solid var(--border-g);color:var(--gold);opacity:.7;border-radius:1px}
+
+/* Streak */
+.streak{display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem;padding:.65rem 1rem;background:var(--surf);border:1px solid var(--border)}
+.streak-lbl{font-family:monospace;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.streak-n{color:var(--gold);font-size:1rem;font-weight:600}
+.dots{display:flex;gap:4px;margin-left:auto}
+.dot{width:7px;height:7px;border-radius:50%;background:rgba(74,124,89,.2)}
+.dot.on{background:var(--green);box-shadow:0 0 5px var(--green)}
+
+/* Card */
+.card{border:1px solid var(--border);background:var(--surf);padding:1.75rem 1.5rem;position:relative;overflow:hidden;margin-bottom:1rem}
+.card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(74,124,89,.1) 0%,transparent 60%);pointer-events:none}
+.corner{position:absolute;width:16px;height:16px;opacity:.35}
+.tl{top:8px;left:8px;border-top:1px solid var(--gold);border-left:1px solid var(--gold)}
+.tr{top:8px;right:8px;border-top:1px solid var(--gold);border-right:1px solid var(--gold)}
+.bl{bottom:8px;left:8px;border-bottom:1px solid var(--gold);border-left:1px solid var(--gold)}
+.br{bottom:8px;right:8px;border-bottom:1px solid var(--gold);border-right:1px solid var(--gold)}
+.card-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1.25rem;padding-bottom:.85rem;border-bottom:1px solid var(--border);position:relative;z-index:1}
+.card-num{font-family:monospace;font-size:.62rem;color:var(--muted);letter-spacing:.1em}
+.card-date{font-family:monospace;font-size:.6rem;color:var(--green-l);opacity:.7}
+.badge{display:inline-flex;align-items:center;gap:.35rem;background:var(--gold-d);border:1px solid var(--border-g);padding:.25rem .7rem;margin-bottom:1.1rem;position:relative;z-index:1}
+.badge-dot{width:5px;height:5px;background:var(--gold);border-radius:50%}
+.badge-txt{font-family:monospace;font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold)}
+.idea-title{font-size:clamp(1.2rem,4vw,1.7rem);font-weight:600;color:#eef3e8;line-height:1.3;margin-bottom:1rem;position:relative;z-index:1}
+.idea-body{font-size:1rem;line-height:1.8;font-weight:300;position:relative;z-index:1}
+.idea-body em{font-style:italic;color:var(--green-l)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid var(--border);position:relative;z-index:1}
+.cell{background:var(--surf2);padding:.7rem .85rem;border-left:2px solid var(--green)}
+.cell-lbl{font-family:monospace;font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:.25rem}
+.cell-val{font-size:.85rem;font-weight:300}
+
+/* Nav */
+.nav{display:flex;gap:.6rem;margin-bottom:1.5rem}
+.btn{font-family:Georgia,serif;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;padding:.65rem 1rem;transition:all .2s}
+.btn-prev,.btn-next{background:var(--surf);color:var(--muted);border:1px solid var(--border);flex:1;font-size:1rem}
+.btn-prev:hover,.btn-next:hover{border-color:var(--green);color:var(--green-l)}
+.btn-prev:disabled,.btn-next:disabled{opacity:.25;cursor:not-allowed}
+
+/* History */
+.hist-toggle{width:100%;background:transparent;color:var(--muted);border:1px solid var(--border);padding:.65rem;font-family:monospace;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;margin-bottom:.75rem}
+.hist-toggle:hover{border-color:var(--green);color:var(--green-l)}
+.hist-item{display:flex;align-items:center;gap:.75rem;padding:.6rem .85rem;background:var(--surf);border:1px solid var(--border);margin-bottom:.4rem;cursor:pointer;transition:border-color .15s}
+.hist-item:hover{border-color:var(--green)}
+.hist-date{font-family:monospace;font-size:.55rem;color:var(--muted);min-width:72px}
+.hist-name{flex:1;font-style:italic;font-size:.85rem}
+.hist-theme{font-family:monospace;font-size:.5rem;text-transform:uppercase;color:var(--gold);opacity:.6}
+
+/* Modal */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;align-items:center;justify-content:center;padding:1.5rem}
+.modal-bg.open{display:flex}
+.modal{background:var(--surf);border:1px solid var(--border);padding:2rem;max-width:500px;width:100%;max-height:85vh;overflow-y:auto;position:relative}
+.modal-close{position:absolute;top:.75rem;right:.75rem;background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;line-height:1}
+.modal-close:hover{color:var(--text)}
+
+footer{text-align:center;margin-top:1.5rem;font-family:monospace;font-size:.52rem;color:var(--muted);opacity:.35;letter-spacing:.12em;padding-bottom:1rem}
+
+/* Install banner */
+.install-banner{display:none;align-items:center;gap:1rem;padding:.75rem 1rem;background:rgba(74,124,89,.12);border:1px solid var(--border);margin-bottom:1.25rem}
+.install-banner.show{display:flex}
+.install-txt{font-family:monospace;font-size:.6rem;color:var(--green-l);flex:1;line-height:1.5;letter-spacing:.05em}
+.install-btn{background:var(--green);color:#fff;border:none;padding:.45rem .9rem;font-family:monospace;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.card{animation:fadeIn .35s ease}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Tägliche Inspiration</div>
+    <h1>Tattoo <span>Idee des Tages</span></h1>
+    <div class="tags">
+      <span class="tag">Keltisch</span>
+      <span class="tag">Irland</span>
+      <span class="tag">Floral</span>
+      <span class="tag">Fantasy</span>
+      <span class="tag">Realism</span>
+    </div>
+  </header>
+
+  <div class="install-banner" id="installBanner">
+    <div class="install-txt">📲 Als App speichern — öffne das Teilen-Menü und tippe „Zum Homescreen"</div>
+    <button class="install-btn" id="installBtn" onclick="installApp()">Installieren</button>
+  </div>
+
+  <div class="streak">
+    <span class="streak-lbl">Streak</span>
+    <span class="streak-n" id="streakN">0 Tage</span>
+    <div class="dots" id="dots"></div>
+  </div>
+
+  <div class="card" id="card">
+    <div class="corner tl"></div><div class="corner tr"></div>
+    <div class="corner bl"></div><div class="corner br"></div>
+    <div class="card-head">
+      <span class="card-num" id="cardNum"></span>
+      <span class="card-date" id="cardDate"></span>
+    </div>
+    <div class="badge"><div class="badge-dot"></div><span class="badge-txt" id="theme"></span></div>
+    <h2 class="idea-title" id="title"></h2>
+    <p class="idea-body" id="desc"></p>
+    <div class="grid">
+      <div class="cell"><div class="cell-lbl">Größe</div><div class="cell-val" id="size"></div></div>
+      <div class="cell"><div class="cell-lbl">Stil-Tipp</div><div class="cell-val" id="style"></div></div>
+      <div class="cell"><div class="cell-lbl">Platzierung</div><div class="cell-val" id="place"></div></div>
+      <div class="cell"><div class="cell-lbl">Schwierigkeit</div><div class="cell-val" id="diff"></div></div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-prev" id="btnPrev" onclick="navigate(-1)" title="Vorherige">←</button>
+    <button class="btn btn-next" id="btnNext" onclick="navigate(1)" title="Nächste">→</button>
+  </div>
+
+  <button class="hist-toggle" onclick="toggleHist()">Verlauf anzeigen ↓</button>
+  <div id="histSection" style="display:none"></div>
+
+  <footer>30 Ideen · jeden Tag eine neue · Lenas Tattoo Inspiration · Braunschweig</footer>
+</div>
+
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+const IDEAS = [
+  {theme:"Keltisch",title:"Triquetra der Ewigkeit",description:"Eine filigrane Triquetra aus ineinander verschlungenen Linien, die sich endlos fortzusetzen scheinen. Die <em>Knotenpunkte</em> sind mit winzigen Punkten akzentuiert, die Licht und Tiefe erzeugen. Das Motiv strahlt zeitlose Ruhe und spirituelle Verbundenheit aus.",size:"Handflächengross",styleHint:"Feinlinie mit Dotwork-Akzenten",placement:"Handgelenk oder Dekolleté",difficulty:"Fortgeschritten"},
+  {theme:"Floral",title:"Schlafende Mohnblüte",description:"Eine halb geschlossene Mohnblüte in detaillierter Botanical-Art, die Blütenblätter leicht gefaltet wie im Schlaf. <em>Feine Staubfäden</em> ragen aus dem Zentrum heraus und erzeugen Tiefe. Die Stimmung ist melancholisch-romantisch.",size:"Briefmarke bis Handflächengross",styleHint:"Blackwork mit feinen Grauwash-Schattierungen",placement:"Schulterblatt oder Unterarm",difficulty:"Fortgeschritten"},
+  {theme:"Fantasy",title:"Drachenauge im Nebel",description:"Ein einzelnes reptilienartiges Auge, umgeben von wirbelndem Nebel und zarten Schuppenmustern. Die <em>Pupille</em> spiegelt eine winzige Mondlandschaft wider. Das Motiv wirkt geheimnisvoll und zieht den Blick unweigerlich an.",size:"Handflächengross",styleHint:"Realism mit Illustrationselementen",placement:"Oberarm oder Wade",difficulty:"Meisterklasse"},
+  {theme:"Irland",title:"Kleeblatt im Morgentau",description:"Drei Kleeblattblätter mit realistischen Tautropfen, die das Licht eines irischen Morgens einfangen. <em>Feine Blattadern</em> durchziehen jedes Blatt und verleihen dem Motiv botanische Präzision. Es wirkt frisch, lebendig und geerdet.",size:"Briefmarke",styleHint:"Feinlinie Botanical Realism",placement:"Schlüsselbein oder Knöchel",difficulty:"Fortgeschritten"},
+  {theme:"Realism",title:"Rabenfedern im Wind",description:"Zwei bis drei realistische Rabenfedern, die in verschiedenen Winkeln fallen, mit präzise ausgearbeiteten <em>Federbarben</em>. Subtile Schattierungen lassen die Federn dreidimensional wirken. Das Motiv ist elegant, dunkel und zeitlos.",size:"Unterarm-Länge",styleHint:"Schwarzgrau Realism, kein Outline",placement:"Unterarm oder Rippen",difficulty:"Meisterklasse"},
+  {theme:"Keltisch + Floral",title:"Knotengarten der Druiden",description:"Keltische Endlosknoten die sich organisch in Blumenstengel und Blätter verwandeln. <em>Wilde Rosen</em> wachsen aus den Knotenpunkten heraus, als wäre Stein zu Leben erwacht. Das Motiv verbindet archaische Geometrie mit natürlicher Schönheit.",size:"Sleeve-Element",styleHint:"Blackwork mit organischen Übergängen",placement:"Oberarm oder Oberschenkel",difficulty:"Meisterklasse"},
+  {theme:"Fantasy + Realism",title:"Mondgöttin mit Sternenmantel",description:"Eine stilisierte Frauensilhouette deren Umriss in einen gestirnten Nachthimmel übergeht. <em>Realistische Sterne</em> und Nebel füllen den Mantel, während die Figur selbst als zarter Feinlinien-Umriss bleibt. Poetisch und traumhaft.",size:"Handflächengross bis Unterarm",styleHint:"Kombination Feinlinie und Schwarzgrau Realism",placement:"Oberarm oder Schulterblatt",difficulty:"Meisterklasse"},
+  {theme:"Irland + Fantasy",title:"Seelenbaum von Tir na Nog",description:"Ein knorriger keltischer Lebensbaum dessen Wurzeln Runen tragen und dessen Krone in goldenes Feenfeuer übergeht. <em>Winzige Elfen</em> sitzen versteckt zwischen den Ästen. Das Motiv erzählt von der irischen Anderswelt.",size:"Sleeve-Element oder Rücken",styleHint:"Illustrativ mit Blackwork-Basis",placement:"Rücken oder Oberschenkel",difficulty:"Meisterklasse"},
+  {theme:"Floral + Realism",title:"Vergängliche Kirschblüte",description:"Drei fallende Kirschblüten in fotografischem Realismus, eine bereits welkend mit <em>braunen Rändern</em>. Das Spiel aus Blüte und Verfall erzeugt eine stille Melancholie. Jedes Blütenblatt hat individuelle Textur und Lichtreflexe.",size:"Handflächengross",styleHint:"Schwarzgrau Realism ohne Outlines",placement:"Unterarm Innenseite oder Schlüsselbein",difficulty:"Meisterklasse"},
+  {theme:"Keltisch",title:"Ewiges Labyrinth",description:"Ein keltisches Labyrinth aus einem einzigen ununterbrochenen Linienzug, geometrisch präzise und doch organisch wirkend. Im <em>Zentrum</em> verbirgt sich ein winziges Triskelion. Das Motiv lädt zum Verweilen und Nachspüren ein.",size:"Briefmarke bis Handflächengross",styleHint:"Feinlinie, absolut präzise",placement:"Handflächeninnenseite oder Nacken",difficulty:"Fortgeschritten"},
+  {theme:"Fantasy",title:"Kristalldrache im Schlaf",description:"Ein zusammengerollter kleiner Drache, dessen Schuppen aus geometrischen <em>Kristallstrukturen</em> bestehen. Der Schwanz umschlingt einen einzelnen Edelstein. Die Stimmung ist märchenhaft und zart, fast wie ein schlafendes Wesen.",size:"Handflächengross",styleHint:"Feinlinie mit geometrischen Füllelementen",placement:"Schulterblatt oder Wade",difficulty:"Fortgeschritten"},
+  {theme:"Irland",title:"Stonehenge im Morgennebel",description:"Stehende Steine in Silhouette, dahinter ein irischer Sonnenaufgang mit <em>Nebelschleiern</em> zwischen den Felsen. Die Stimmung ist mystisch und uralt. Oben ein einzelner Rabe auf dem höchsten Stein als stummer Zeuge.",size:"Unterarm-Breite",styleHint:"Schwarzgrau mit Grauwash-Atmosphäre",placement:"Unterarm oder Schienbein",difficulty:"Fortgeschritten"},
+  {theme:"Realism",title:"Wolfauge in der Dämmerung",description:"Ein einzelnes Wolfsauge in extremem Nahaufnahme-Realismus, die <em>Iris</em> spiegelt einen Fichtenwald in der Abenddämmerung. Jedes einzelne Haar um das Auge ist erkennbar. Das Motiv ist eindringlich und verbindet Wildheit mit Tiefe.",size:"Handflächengross",styleHint:"Hyperrealism Schwarzgrau",placement:"Oberarm Außenseite oder Oberschenkel",difficulty:"Meisterklasse"},
+  {theme:"Floral",title:"Distel und Wildrose",description:"Eine schottische Distel und eine halboffene Wildrose, ihre Stiele miteinander verschlungen. Die <em>Dornen</em> beider Pflanzen sind präzise ausgearbeitet und erzählen von Schönheit und Schutz. Botanisch korrekt und dennoch romantisch.",size:"Unterarm-Länge",styleHint:"Botanical Illustration, Blackwork",placement:"Unterarm oder Rippen",difficulty:"Fortgeschritten"},
+  {theme:"Keltisch + Fantasy",title:"Feuerknoten des Drachen",description:"Ein keltischer Knoten der sich an den Enden in Drachenklauen verwandelt, aus denen kleine Flammen züngeln. <em>Runische Inschriften</em> verlaufen entlang der Knotenlinien. Das Motiv verbindet Tradition mit mythischer Kraft.",size:"Sleeve-Element",styleHint:"Blackwork mit feinen Grauschattierungen",placement:"Oberarm oder Schulter",difficulty:"Meisterklasse"},
+  {theme:"Irland + Floral",title:"Shannons Seerosentraum",description:"Irische Seerosen auf dunklem Wasser, jedes Blütenblatt mit <em>feinen Wasseradern</em> durchzogen. Unter der Oberfläche sind schemenhaft keltische Muster erkennbar, als spiegele das Wasser die alte Zeit. Still und meditativ.",size:"Handflächengross bis Unterarm",styleHint:"Feinlinie mit Dotwork-Wassertextur",placement:"Unterarm oder Wadenbein",difficulty:"Fortgeschritten"},
+  {theme:"Fantasy",title:"Phönix im Ascheregen",description:"Ein aufsteigender Phönix, dessen Schwanzfedern in herabfallende <em>Glut und Asche</em> übergehen. Die Flügelspitzen lösen sich in Funken auf. Das Motiv symbolisiert Transformation und Wiedergeburt mit dramatischer Energie.",size:"Sleeve-Element oder Rücken",styleHint:"Illustrativ, Schwarzgrau mit feinen Weißlichtern",placement:"Rücken oder Oberschenkel",difficulty:"Meisterklasse"},
+  {theme:"Realism",title:"Alte Eiche nach dem Regen",description:"Ein realistischer Eichenast mit Moos, nach dem Regen noch glänzend. <em>Regentropfen</em> perlen an den Blättern und erzeugen kleine Spiegelungen. Ein Marienkäfer sitzt auf einem Blatt und gibt dem Motiv Lebendigkeit.",size:"Unterarm-Länge",styleHint:"Botanical Realism, Schwarzgrau",placement:"Unterarm oder Schulterblatt",difficulty:"Meisterklasse"},
+  {theme:"Keltisch",title:"Triskelion der drei Welten",description:"Ein Triskelion das Oberwelt, Unterwelt und Mittelwelt symbolisiert, jede Spirale mit einem anderen feinen <em>Texturnetz</em> gefüllt. Die Übergänge zwischen den Spiralen sind fließend wie Wasser. Kraftvoll und symmetrisch.",size:"Handflächengross",styleHint:"Feinlinie mit Dotwork-Füllung",placement:"Sternum oder Nacken",difficulty:"Fortgeschritten"},
+  {theme:"Floral + Fantasy",title:"Elfenblüte im Mondlicht",description:"Eine imaginäre Blüte die nur im Mondlicht aufgeht, ihre Blütenblätter durchscheinend wie <em>Glimmerstoff</em>. Winzige Elfen schlafen in den Kelchen. Das Motiv ist traumhaft-zart und voller stiller Magie.",size:"Handflächengross",styleHint:"Feinlinie mit hauchdünnen Schattierungen",placement:"Schlüsselbein oder Schulterblatt",difficulty:"Fortgeschritten"},
+  {theme:"Irland",title:"Galway Bay bei Nacht",description:"Die Galway Bucht unter einem Sternenhimmel, Fischerboote als <em>dunkle Silhouetten</em> auf dem Wasser. Der Mond wirft einen Lichtstreifen auf die Wellen. Ein stimmungsvolles Landschaftsmotiv voller irischer Romantik.",size:"Unterarm-Breite",styleHint:"Schwarzgrau Panorama, Grauwash",placement:"Unterarm oder Schienbein",difficulty:"Fortgeschritten"},
+  {theme:"Fantasy + Floral",title:"Dornröschen schläft",description:"Eine schlafende Frauenfigur eingebettet in wuchernde Dornenranken und <em>verwunschene Rosen</em>. Das Gesicht ist friedvoll, die Haare fließen in die Blätter über. Märchenhaft und voll stiller Dramatik.",size:"Sleeve-Element",styleHint:"Illustrativ Blackwork mit Feinlinie-Detail",placement:"Oberschenkel oder Rippen",difficulty:"Meisterklasse"},
+  {theme:"Realism",title:"Tintenfischkind der Tiefsee",description:"Ein junger Oktopus in perfektem Realismus, ein Tentakel neugierig ausgestreckt. Die <em>Saugnäpfe</em> haben individuelle Texturen und die Haut zeigt subtile Farbgradienten in Grau. Faszinierend und märchenhaft zugleich.",size:"Handflächengross bis Unterarm",styleHint:"Schwarzgrau Realism",placement:"Unterarm oder Wade",difficulty:"Meisterklasse"},
+  {theme:"Keltisch + Irland",title:"Ogham-Stein am Kliffrand",description:"Ein mit Ogham-Runen beschrifteter Stein am Rand irischer Klippen, dahinter das Meer in <em>Sturmstimmung</em>. Moos wächst in den Rillen der Zeichen. Das Motiv verbindet Sprache, Natur und Geschichte.",size:"Unterarm-Länge",styleHint:"Schwarzgrau Illustration",placement:"Unterarm oder Wadenbein",difficulty:"Fortgeschritten"},
+  {theme:"Floral",title:"Vergissmeinnicht-Konstellation",description:"Winzige Vergissmeinnicht-Blüten arrangiert wie ein <em>Sternbild</em>, verbunden durch hauchdünne Linien. Jede Blüte ist botanisch korrekt aber zusammen ergeben sie eine kosmische Karte der Erinnerung. Zart und bedeutungsvoll.",size:"Briefmarke bis Handflächengross",styleHint:"Feinlinie Botanical",placement:"Handgelenk, Knöchel oder Schlüsselbein",difficulty:"Fortgeschritten"},
+  {theme:"Fantasy",title:"Bibliothek der vergessenen Zauberer",description:"Eine miniaturisierte Zauberer-Bibliothek im Querschnitt, winzige <em>Bücherregale</em> vollgestopft mit leuchtenden Bänden. Eine Eule sitzt oben, Schriftrollen rollen auf den Boden. Verspielt, detailreich, voller Geschichten.",size:"Handflächengross",styleHint:"Illustrativ, Feinlinie mit Dotwork",placement:"Oberschenkel oder Oberarm",difficulty:"Meisterklasse"},
+  {theme:"Irland + Realism",title:"Turmfalke über Connemara",description:"Ein Turmfalke im Sturzflug über die Connemara-Heide, Flügel angewinkelt, <em>Augen fixiert</em>. Unter ihm die typische irische Landschaft in zarten Grauwash-Schattierungen. Dynamisch und präzise.",size:"Sleeve-Element",styleHint:"Realism mit Landschaftshintergrund",placement:"Schulterblatt oder Oberschenkel",difficulty:"Meisterklasse"},
+  {theme:"Keltisch",title:"Spirale der Jahreszeiten",description:"Vier ineinandergreifende keltische Spiralen, jede einer Jahreszeit gewidmet und mit entsprechenden <em>Naturmotiven</em> gefüllt: Knospen, Sonne, Blatt, Schneeflocke. Das Ganze ergibt ein harmonisches rundes Mandala.",size:"Handflächengross bis Teller",styleHint:"Feinlinie mit Dotwork-Detail",placement:"Sternum, Schulter oder Knie",difficulty:"Fortgeschritten"},
+  {theme:"Realism + Fantasy",title:"Einhorn im Winterwald",description:"Ein realistisch gezeichnetes Einhorn das durch einen schneebedeckten Wald schreitet, sein Horn wirft <em>Regenbogenschatten</em> auf den Schnee. Das Fell ist so detailliert wie ein echtes Pferd, das Magische steckt nur im Horn.",size:"Sleeve-Element",styleHint:"Schwarzgrau Realism mit Fantasy-Elementen",placement:"Oberschenkel oder Rücken",difficulty:"Meisterklasse"},
+  {theme:"Floral + Irland",title:"Heidekraut vom Burren",description:"Irisches Heidekraut und Burren-Wildblumen in einem dichten Strauß, botanisch exakt. Zwischen den Blättern ein <em>winziger keltischer Knoten</em> als verstecktes Detail. Heimelig, wild und unverwechselbar irisch.",size:"Unterarm-Länge",styleHint:"Botanical Illustration Blackwork",placement:"Unterarm oder Rippen",difficulty:"Fortgeschritten"},
+  {theme:"Keltisch + Realism",title:"Wikingerschiff im Sturm",description:"Ein realistisches Wikingerschiff mit keltischen Schnitzereien am Bug, das durch <em>dramatische Wellen</em> pflügt. Der Himmel zeigt Nordlichter. Kraft, Abenteuer und Geschichte in einem einzigen Motiv vereint.",size:"Sleeve-Element",styleHint:"Schwarzgrau Realism mit Illustrationselementen",placement:"Rücken oder Oberschenkel",difficulty:"Meisterklasse"},
+];
+
+function getToday(){return new Date().toISOString().split('T')[0]}
+function fmtDate(iso){return new Date(iso+'T12:00:00').toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'})}
+function dayIdx(d){const s=new Date('2024-01-01T00:00:00'),t=new Date(d+'T00:00:00');return Math.floor((t-s)/86400000)%IDEAS.length}
+function store(){try{const r=localStorage.getItem('tattoo_v8');return r?JSON.parse(r):{seen:[]}}catch{return{seen:[]}}}
+function save(d){try{localStorage.setItem('tattoo_v8',JSON.stringify(d))}catch{}}
+
+const today=getToday();
+let currentDate=today;
+let histOpen=false;
+let deferredPrompt=null;
+
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();deferredPrompt=e;
+  document.getElementById('installBanner').classList.add('show');
+});
+window.addEventListener('appinstalled',()=>{
+  document.getElementById('installBanner').classList.remove('show');
+});
+
+function installApp(){
+  if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.then(()=>{deferredPrompt=null})}
+}
+
+function render(dateStr){
+  const idx=dayIdx(dateStr);
+  const idea=IDEAS[idx];
+  document.getElementById('cardNum').textContent='Idee #'+(idx+1)+' von '+IDEAS.length;
+  document.getElementById('cardDate').textContent=fmtDate(dateStr);
+  document.getElementById('theme').textContent=idea.theme;
+  document.getElementById('title').textContent=idea.title;
+  document.getElementById('desc').innerHTML=idea.description;
+  document.getElementById('size').textContent=idea.size;
+  document.getElementById('style').textContent=idea.styleHint;
+  document.getElementById('place').textContent=idea.placement;
+  document.getElementById('diff').textContent=idea.difficulty;
+  document.getElementById('btnPrev').disabled=(dateStr<=today&&dateStr===new Date('2024-01-01T00:00:00').toISOString().split('T')[0]);
+  document.getElementById('btnNext').disabled=(dateStr>=today);
+  // re-trigger animation
+  const card=document.getElementById('card');
+  card.style.animation='none';card.offsetHeight;card.style.animation='';
+}
+
+function navigate(dir){
+  const d=new Date(currentDate+'T12:00:00');
+  d.setDate(d.getDate()+dir);
+  const next=d.toISOString().split('T')[0];
+  if(next>today)return;
+  currentDate=next;
+  render(currentDate);
+}
+
+function calcStreak(seen){
+  const sorted=[...seen].sort((a,b)=>b.date.localeCompare(a.date));
+  let s=0;
+  for(let i=0;i<sorted.length;i++){
+    const d=new Date(today+'T12:00:00');d.setDate(d.getDate()-i);
+    if(sorted[i].date===d.toISOString().split('T')[0])s++;else break;
+  }
+  document.getElementById('streakN').textContent=s+(s===1?' Tag':' Tage');
+  const c=document.getElementById('dots');c.innerHTML='';
+  for(let i=0;i<7;i++){const d=document.createElement('div');d.className='dot'+(i<s?' on':'');c.appendChild(d)}
+}
+
+function toggleHist(){
+  histOpen=!histOpen;
+  const sec=document.getElementById('histSection');
+  const btn=document.querySelector('.hist-toggle');
+  if(histOpen){
+    const data=store();
+    const past=data.seen.filter(s=>s.date!==today).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,15);
+    sec.innerHTML=past.length===0
+      ?'<div style="font-family:monospace;font-size:.62rem;color:var(--muted);padding:.5rem 0">Noch keine vergangenen Ideen.</div>'
+      :past.map(s=>{const idea=IDEAS[dayIdx(s.date)];return`<div class="hist-item" onclick="openModal('${s.date}')"><span class="hist-date">${fmtDate(s.date)}</span><span class="hist-name">${idea.title}</span><span class="hist-theme">${idea.theme}</span></div>`}).join('');
+    sec.style.display='block';
+    btn.textContent='Verlauf ausblenden ↑';
+  } else {
+    sec.style.display='none';
+    btn.textContent='Verlauf anzeigen ↓';
+  }
+}
+
+function openModal(dateStr){
+  const idea=IDEAS[dayIdx(dateStr)];
+  document.getElementById('modalBody').innerHTML=`
+    <div style="font-family:monospace;font-size:.58rem;color:var(--muted);margin-bottom:.5rem">${fmtDate(dateStr)} · ${idea.theme}</div>
+    <h2 style="font-size:1.35rem;font-weight:600;color:#eef3e8;line-height:1.3;margin-bottom:1rem">${idea.title}</h2>
+    <p style="font-size:1rem;line-height:1.8;font-weight:300;margin-bottom:1.25rem">${idea.description}</p>
+    <div class="grid">
+      <div class="cell"><div class="cell-lbl">Größe</div><div class="cell-val">${idea.size}</div></div>
+      <div class="cell"><div class="cell-lbl">Stil-Tipp</div><div class="cell-val">${idea.styleHint}</div></div>
+      <div class="cell"><div class="cell-lbl">Platzierung</div><div class="cell-val">${idea.placement}</div></div>
+      <div class="cell"><div class="cell-lbl">Schwierigkeit</div><div class="cell-val">${idea.difficulty}</div></div>
+    </div>`;
+  document.getElementById('modalBg').classList.add('open');
+}
+function closeModal(){document.getElementById('modalBg').classList.remove('open')}
+
+// Init
+const data=store();
+if(!data.seen.find(s=>s.date===today)){data.seen.push({date:today});save(data)}
+calcStreak(data.seen);
+render(today);
+
+// Register service worker for offline support
+if('serviceWorker' in navigator){
+  const swCode=`
+    const CACHE='tattoo-v1';
+    self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.add('/'))));
+    self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{const clone=res.clone();caches.open(CACHE).then(c=>c.put(e.request,clone));return res}))));
+  `;
+  const blob=new Blob([swCode],{type:'application/javascript'});
+  const swUrl=URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swUrl).catch(()=>{});
+}
+</script>
+</body>
+</html>
